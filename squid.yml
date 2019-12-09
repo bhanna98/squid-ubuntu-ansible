@@ -1,0 +1,23 @@
+---
+
+- name: Deploy a proxy server
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: Update
+      shell: set -v ; apt-get -y update ; apt-get instsall -y ntpdate ; apt-get install -y squid3 apache2-utils
+      sudo: true
+    - name: Create Squid Backup
+      shell: cp /etc/squid3/squid.conf /etc/squid3/squid.conf.bak
+      sudo: true
+    - name: Execute Script
+      shell: chmod +x proxy-ubuntu-linux.sh
+      sudo: true
+    - name: Run Script
+      shell: ./proxy-ubuntu-linux.sh
+      sudo: true
+    - name: Firewall
+      shell: ufw allow 3128
+      sudo: true
+    - debug: msg="Squid has been set up. Configure browsers to your IP on port 3128"
